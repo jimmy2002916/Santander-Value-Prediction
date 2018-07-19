@@ -22,10 +22,17 @@ X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
 # In[22]:
-from sklearn import linear_model
-model = linear_model.LinearRegression()
+from sklearn.tree import DecisionTreeRegressor
+model = DecisionTreeRegressor()
 model.fit(X, y)
+#y_pred = model.predict(X_test)
 
+#%%
+"""
+from sklearn import metrics
+fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred, pos_label=2)
+auc = metrics.auc(fpr, tpr)
+"""
 # In[24]:
 features_for_test = list(set(test.columns) - {'ID'})
 final_prediction = model.predict(test[features_for_test])
@@ -35,5 +42,5 @@ ID = test['ID']
 target = pd.DataFrame(final_prediction, columns = ['target'])
 target[target < 0] = 0
 result = pd.concat([ID, target], axis=1)
-result.to_csv("submission.csv", index = False)
+result.to_csv("submission_DT.csv", index = False)
 
