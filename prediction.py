@@ -13,7 +13,7 @@ features = list(set(train.columns) - {label,'ID'})
 X = train[features]
 y = train[label]
 
-#for xgb 
+#for Keras
 X = X.as_matrix()
 y = y.as_matrix()
 
@@ -32,9 +32,28 @@ X_test = sc.transform(X_test)
 # In[22]:
 print("training...")
 ### Change the File output name into the model you use here. 
-from xgboost import XGBRegressor
-model = XGBRegressor()            
-model.fit(X, y)
+print("Building ANN")
+from sklearn.model_selection import cross_val_score, KFold
+from keras.models import Sequential
+from sklearn.metrics import accuracy_score
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasRegressor
+seed = 1
+
+def baseline_model():
+    model = Sequential()
+    model.add(Dense(units = 4991, input_dim = 4991, activation='relu'))
+    model.add(Dense(units = 4991, activation='relu'))
+    model.add(Dense(1))
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    return model
+
+
+model = KerasRegressor(build_fn = baseline_model)        
+model.fit(X, y,
+          batch_size = 40, 
+          epochs = 100
+          )
 #y_pred = model.predict(X_test)
 
 #%%
@@ -49,6 +68,8 @@ features_for_test = list(set(test.columns) - {'ID'})
 test = test[features_for_test]
 test = test.as_matrix()
 final_prediction = model.predict(test)
+accuracy_score(y, final_prediction)
+
 
 # In[26]:
 print("Outputing file...")
@@ -57,5 +78,5 @@ ID = test['ID']
 target = pd.DataFrame(final_prediction, columns = ['target'])
 target[target < 0] = 0
 result = pd.concat([ID, target], axis=1)
-result.to_csv("submission_xgb.csv", index = False)
+result.to_csv("submission_keras.csv", index = False)
 
