@@ -49,8 +49,6 @@ def Stacking(model,train,y,test,n_fold):
    for train_indices,val_indices in folds.split(train,y.values):
       x_train,x_val=train.iloc[train_indices],train.iloc[val_indices]
       y_train,y_val=y.iloc[train_indices],y.iloc[val_indices]
-      x_train = x_train.as_matrix()
-      y_train = y_train.as_matrix()
       model.fit(X=x_train,y=y_train)
       train_pred=np.append(train_pred,model.predict(x_val))
       test_pred=np.append(test_pred,model.predict(test))
@@ -58,8 +56,8 @@ def Stacking(model,train,y,test,n_fold):
 
 #%%
 print("model 1")
-from xgboost import XGBRegressor
-model1 = XGBRegressor()            
+from sklearn.tree import DecisionTreeRegressor
+model1 = DecisionTreeRegressor(random_state = 0)            
 
 test_pred1 ,train_pred1, model_1 = Stacking(model = model1, n_fold = 5, train=x_train,test=x_test,y=y_train)
 train_pred1 = pd.DataFrame(train_pred1)
@@ -69,7 +67,7 @@ model_1.score(x_train, y_train) #same score!?!?
 #%%
 print("model 2")
 from sklearn.tree import DecisionTreeRegressor
-model2 = DecisionTreeRegressor()
+model2 = DecisionTreeRegressor(random_state = 1)
  
 test_pred2 ,train_pred2, model_2 = Stacking(model = model2, n_fold = 5, train=x_train,test=x_test,y=y_train)
 train_pred2 = pd.DataFrame(train_pred2)
