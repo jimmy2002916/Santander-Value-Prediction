@@ -43,16 +43,16 @@ x_test = sc.transform(x_test)
 # In[22]:
 print("training...")
 def Stacking(model,train,y,test,n_fold):
-   folds = KFold(n_splits=n_fold,random_state=1)
-   test_pred=np.empty((test.shape[0],1),float)
-   train_pred=np.empty((0,1),float)
-   for train_indices,val_indices in folds.split(train,y.values):
-      x_train,x_val=train.iloc[train_indices],train.iloc[val_indices]
-      y_train,y_val=y.iloc[train_indices],y.iloc[val_indices]
-      model.fit(X=x_train,y=y_train)
-      train_pred=np.append(train_pred,model.predict(x_val))
-      test_pred=np.append(test_pred,model.predict(test))
-   return test_pred.reshape(-1,1),train_pred, model
+       folds = KFold(n_splits=n_fold,random_state=1)
+       test_pred=np.empty((test.shape[0],1),float)
+       train_pred=np.empty((0,1),float)
+       for train_indices,val_indices in folds.split(train,y.values):
+              x_train,x_val=train.iloc[train_indices],train.iloc[val_indices]
+              y_train,y_val=y.iloc[train_indices],y.iloc[val_indices]
+              model.fit(X=x_train,y=y_train)
+              train_pred=np.append(train_pred,model.predict(x_val))
+              test_pred=np.append(test_pred, model.predict(test))
+       return test_pred.reshape(-1,1),train_pred, model
 
 #%%
 print("model 1")
@@ -62,6 +62,7 @@ model1 = DecisionTreeRegressor(random_state = 0)
 test_pred1 ,train_pred1, model_1 = Stacking(model = model1, n_fold = 5, train=x_train,test=x_test,y=y_train)
 train_pred1 = pd.DataFrame(train_pred1)
 test_pred1 = pd.DataFrame(test_pred1)
+test_pred1 = test_pred1.iloc[-len(test):]
 model_1.score(x_train, y_train) #same score!?!?
 
 #%%
@@ -72,6 +73,7 @@ model2 = DecisionTreeRegressor(random_state = 1)
 test_pred2 ,train_pred2, model_2 = Stacking(model = model2, n_fold = 5, train=x_train,test=x_test,y=y_train)
 train_pred2 = pd.DataFrame(train_pred2)
 test_pred2 = pd.DataFrame(test_pred2)
+test_pred2 = test_pred2.iloc[-len(test):]
 model_2.score(x_train, y_train) #same score!?!?
 
 #%%
