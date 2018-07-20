@@ -1,4 +1,10 @@
 # coding: utf-8
+"""
+Created on Mon Jul  9 11:04:55 2018
+
+@author: jimmyhomefolder
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,7 +36,7 @@ x_test = test
 from sklearn.cross_validation import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 """
-# In[21]:
+#%%
 # Feature Scaling
 """
 print("Feature scaling...")
@@ -40,7 +46,7 @@ x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 """
 
-# In[22]:
+#%%
 print("training...")
 def Stacking(model,train,y,test,n_fold):
        folds = KFold(n_splits=n_fold,random_state=1)
@@ -91,11 +97,11 @@ from sklearn import metrics
 fpr, tpr, thresholds = metrics.roc_curve(y_test, y_pred, pos_label=2)
 auc = metrics.auc(fpr, tpr)
 """
-# In[24]:
+#%%
 print("predicting... ")
 final_prediction = model.predict(df_test)
 
-# In[26]:
+#%%
 print("Outputing file...")
 test = test_original
 ID = test['ID']
